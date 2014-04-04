@@ -27,7 +27,6 @@ namespace PingPongClient
 			try {
 				socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (host, port);
-				Console.WriteLine("OK");
 				return true;
 			} catch {
 				Console.WriteLine ("Error occurred while connecting to server!");
@@ -35,10 +34,22 @@ namespace PingPongClient
 			}
 		}
 
-		public void Disconnect() 
+		public void Disconnect ()
 		{
 			if (socket.Connected)
-				socket.Disconnect(false);
+				socket.Disconnect (false);
+		}
+
+		private byte[] ComposePacket (byte[] message)
+		{
+			byte[] intBytes = BitConverter.GetBytes (message.Length);
+			if (BitConverter.IsLittleEndian)
+				Array.Reverse (intBytes);
+
+			byte[] result = new byte[ message.Length + intBytes.Length ];
+			Buffer.BlockCopy( intBytes, 0, result, 0, intBytes.Length );
+			Buffer.BlockCopy( message, 0, result, intBytes.Length, message.Length );
+			return result;
 		}
 
 		public void SendMessage (byte[]message)
@@ -49,17 +60,46 @@ namespace PingPongClient
 				packet = message
 			};
 			byte[] raw = packet.Serialize ();
+			byte[] packetRaw = ComposePacket (raw);
+			Send (packetRaw);
+		}
 
-			int bytesSent = socket.Send (raw);
-			if (bytesSent != raw.Length)
-				Console.WriteLine ("Packet was send corrupted");
+		private void Send (byte[]pack)
+		{
+			int bytesSend = socket.Send (pack);
+			int packetLen = pack.Length;
+
+			if (bytesSend < pack.Length) {
+				byte[] chunk = new byte[pack.Length - bytesSend];
+				Buffer.BlockCopy (pack, bytesSend, chunk, 0, pack.Length - bytesSend);
+				Send (chunk);
+			}
+		}
+
+		private byte[] Resv() {
+			byte[] len = new byte[4];
+			socket.Receive (len);
+
+			if (BitConverter.IsLittleEndian)
+				Array.Reverse (len);
+
+			int packetLen = BitConverter.ToInt32 (len, 0);
+
+			byte[] packet = new byte[packetLen];
+			int read = socket.Receive (packet);
+
+			while (read < packetLen) {
+				byte[] chunk = new byte[packetLen - read];
+				int chunkRead = socket.Receive (packet);
+				Buffer.BlockCopy (chunk, 0, packet, read, packetLen - read);
+				read += chunkRead;
+			}
+			return packet;
 		}
 
 		public byte[] RecvMessage ()
 		{
-			byte[] raw = new byte[1024];
-			int bytesRec = socket.Receive (raw);
-
+			byte[] raw = Resv();
 			FullPacket header = FullPacket.Deserialize (raw);
 			if (header == null)
 				return null;

@@ -13,7 +13,7 @@ namespace PingPongClient
 			PingPacket pingPacket = new PingPacket { request = "Ping" };
 			if (!client.Connect ())
 				return;
-			client.SendMessage (pingPacket.Serialize());
+			client.SendMessage (pingPacket.Serialize ());
 			byte[] message = client.RecvMessage ();
 			if (message == null) {
 				Console.WriteLine ("Error recieving packet!");

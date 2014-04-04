@@ -1,8 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PingPongClient/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PingPongClient/net/Client.cs">
     <Files>
-      <File FileName="PingPongClient/Program.cs" Line="13" Column="1" />
+      <File FileName="PingPongClient/Program.cs" Line="17" Column="18" />
+      <File FileName="PingPongClient/packets/FullPacket.cs" Line="1" Column="1" />
+      <File FileName="PingPongClient/packets/PingPacket.cs" Line="1" Column="1" />
+      <File FileName="PingPongClient/packets/PongPacket.cs" Line="1" Column="1" />
+      <File FileName="PingPongClient/packets/ErrorPacket.cs" Line="1" Column="1" />
+      <File FileName="PingPongClient/app.config" Line="1" Column="1" />
+      <File FileName="PingPongClient/net/Client.cs" Line="52" Column="24" />
+      <File FileName="PingPongClient/packets/BasePacket.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
