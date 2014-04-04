@@ -47,8 +47,8 @@ namespace PingPongClient
 				Array.Reverse (intBytes);
 
 			byte[] result = new byte[ message.Length + intBytes.Length ];
-			Buffer.BlockCopy( intBytes, 0, result, 0, intBytes.Length );
-			Buffer.BlockCopy( message, 0, result, intBytes.Length, message.Length );
+			Buffer.BlockCopy (intBytes, 0, result, 0, intBytes.Length);
+			Buffer.BlockCopy (message, 0, result, intBytes.Length, message.Length);
 			return result;
 		}
 
@@ -76,7 +76,8 @@ namespace PingPongClient
 			}
 		}
 
-		private byte[] Resv() {
+		private byte[] Resv ()
+		{
 			byte[] len = new byte[4];
 			socket.Receive (len);
 
@@ -97,14 +98,13 @@ namespace PingPongClient
 			return packet;
 		}
 
-		public byte[] RecvMessage ()
+		public FullPacket RecvMessage ()
 		{
-			byte[] raw = Resv();
+			byte[] raw = Resv ();
 			FullPacket header = FullPacket.Deserialize (raw);
 			if (header == null)
 				return null;
-			Console.WriteLine ("Got packet from server: protocol {0}, api {1}, type {2}", header.protocol, header.apiVersion, header.type);
-			return header.packet;
+			return header;
 		}
 	}
 }

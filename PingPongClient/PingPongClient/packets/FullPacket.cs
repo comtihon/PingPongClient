@@ -6,9 +6,9 @@ namespace PingPongClient
 {
 	public enum PacketType
 	{
-		ping,
-		pong,
-		error
+		ping = 1,
+		pong = 2,
+		error = 3
 	}
 
 	[ProtoContract]
@@ -36,9 +36,6 @@ namespace PingPongClient
 				return deserialized;
 			} catch {
 				Console.Write ("Unknown header format! [");
-				foreach (byte b in raw)
-					Console.Write (b);
-				Console.WriteLine ("], {0}", raw.Length);
 				return null;
 			}
 		}
