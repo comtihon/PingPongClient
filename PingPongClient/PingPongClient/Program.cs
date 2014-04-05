@@ -24,7 +24,7 @@ namespace PingPongClient
 
 			if (!client.Connect ())
 				return false;	
-			PingPacket pingPacket = new PingPacket { request = "Ping" };
+			PingPacket pingPacket = new PingPacket { request = "Ping", uid = ConfigurationManager.AppSettings ["UserId"]};
 			client.SendMessage (pingPacket.Serialize ());
 			Console.WriteLine ("Ping");
 			FullPacket message = client.RecvMessage ();
